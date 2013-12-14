@@ -53,12 +53,14 @@ namespace MRS.Web.UI
         public void ProcessRequest(HttpContext context)
         {
             context.Response.ContentType = "text/plain";
+            //context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
             context.Response.Headers.Add("Access-Control-Request-Header", "X-Prototype-Version, x-requested-with");
             try
             {
                 var file = HttpUtility.UrlDecode(context.Request.QueryString["file"]);
-                var path = HttpUtility.UrlDecode(context.Request.QueryString["path"] + "/" ?? "");
+                var path = HttpUtility.UrlDecode(context.Request.QueryString["path"] ?? "");
+                if (path != "") path += "/";
                 var action = context.Request.QueryString["action"] ?? "";
                 path = Path.GetFullPath(context.Server.MapPath("~/" + path));
                 var filepath = path + file;
@@ -81,8 +83,18 @@ namespace MRS.Web.UI
                             element.Save(filepath);
                             return;
                         }
-                        context.Request.SaveAs(filepath, false);
-                        context.Response.Write(GenerateFileLink(file));
+						if (context.Request.ContentType.ToLower().Contains("charset=utf-8")){
+							var streamReader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
+                            var content = streamReader.ReadToEnd();
+                            streamReader.Close();					
+							var writer = new StreamWriter(filepath, false, Encoding.UTF8);
+							writer.Write(content);
+							writer.Close();
+						}
+						else{
+                        	context.Request.SaveAs(filepath, false);
+                        }
+						context.Response.Write(GenerateFileLink(file));
                     }
                     catch (Exception e)
                     {

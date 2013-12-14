@@ -1,7 +1,7 @@
-<include url="http://services.web-manufacture.net/UI/drag.js"></include>
+﻿<include url="%services%/UI/drag.js"></include>
 
 <script type="text/javascript">
-    Win = M.GetModuleByUrl("http://services.web-manufacture.net/ui/win.htm");
+    Win = M.GetModuleByUrl("%services%/ui/win.htm");
     
     Win.init = function(){	
 	Win.Small = true;
@@ -99,16 +99,20 @@
 	win.cls("top");
     };
     
-    Win.Context = {};
+	Win.Context = {id: "windows-module"};
     Win.Context.Condition = "ui-processing";
-    Win.Context.Selector = "win:not(.prototype):not(.processed)";
+    Win.Context.Selector = "win:not(.prototype):not(.jasp-processed-windows-module),.window:not(.prototype):not(.jasp-processed-windows-module)";
     Win.Context.Process = function(element, context, module)
 	{
 	    var win = Win.CreateWindow(element, module);
+		WS.Body.add(win);
 	    if (!win)
 	    {
-		return false;
+			return false;
 	    };
+		if (win.id){
+			window[win.id] = win;
+		}
 	    //element.cls("processed");
 	    return true;
 	};      
