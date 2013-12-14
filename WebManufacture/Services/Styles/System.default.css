@@ -1,0 +1,199 @@
+body {
+  background-repeat: no-repeat;
+  background-position: center top;    
+}
+  
+html
+{
+  height: 99.9%;
+  width: 99.9%;
+}
+
+body
+{
+  height: 99.9%;
+  width: 99.9%;
+  margin: 0;
+  padding: 0;
+}
+
+h2
+{
+  font-weight: bold;
+  font-size: 30px;
+  color: Navy;
+}
+
+h3
+{
+  font-weight: bold;
+  font-size: 20px;
+  color: Yellow;
+}
+
+  
+prototypes, module, messages, storage, initializer, jasp, handler, .module, .prototype
+{
+  display: none;
+}   
+
+.invisible
+{ 
+  display: none!important;
+}
+
+.layout-table
+{
+  height: 100%;
+  width: 100%;
+}
+
+.layout-table td
+{
+  background: white;
+}
+
+.dialog
+{
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  background: gray;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  top: 0px;
+  left: 0px;
+}
+
+.dialog-inner
+{
+  position: absolute;
+  z-index: 1001;
+  background: white;
+  border: solid 1px black;
+  top: 50%;
+  left: 50%;
+  opacity: 1;
+}
+
+			.btn-ira{
+				display:inline-block;
+				height: 20px;
+				width: 60px;
+				/*background-color: #467F71;
+				border-radius: 5px 5px 5px 5px;
+				color: white;
+				text-align: center;*/
+				margin: 5px;
+				border-radius: 3px;
+				text-shadow: 0 1px 1px white;
+				-webkit-box-shadow: 0 1px 1px #fff;
+				-moz-box-shadow:    0 1px 1px #fff;
+				box-shadow:         0 1px 1px #fff;
+				font: bold 13px Sans-Serif;
+				padding: 3px;
+				white-space: nowrap;
+				vertical-align: middle;
+				color: #666;
+				background: transparent;
+				cursor: pointer;
+
+			}
+			.btn-ira.ok{
+			border: 2px solid #467F71;
+				
+			}
+			.btn-ira.clear{
+			border: 2px solid #E0E0E0;
+				
+			}
+			.btn-ira.cancel{
+			border: 2px solid #FFCA3B;
+				
+			}
+			.btn-ira.delete{
+			border: 2px solid #E52738;
+				
+			}
+			
+			.btn-ira.ok:hover, .btn-ira.ok:focus {
+			border-color: #999;
+			background: -webkit-linear-gradient(top, white, #467F71);
+			background:    -moz-linear-gradient(top, white, #467F71);
+			background:     -ms-linear-gradient(top, white, #467F71);
+			background:      -o-linear-gradient(top, white, #467F71);
+			-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			-moz-box-shadow:    0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			box-shadow:         0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			}
+			.btn-ira.clear:hover, .btn-ira.clear:focus {
+			border-color: #999;
+			background: -webkit-linear-gradient(top, white, #E0E0E0);
+			background:    -moz-linear-gradient(top, white, #E0E0E0);
+			background:     -ms-linear-gradient(top, white, #E0E0E0);
+			background:      -o-linear-gradient(top, white, #E0E0E0);
+			-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			-moz-box-shadow:    0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			box-shadow:         0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			}
+			
+			.btn-ira.cancel:hover, .btn-ira.cancel:focus {
+			border-color: #999;
+			background: -webkit-linear-gradient(top, white, #FFCA3B);
+			background:    -moz-linear-gradient(top, white, #FFCA3B);
+			background:     -ms-linear-gradient(top, white, #FFCA3B);
+			background:      -o-linear-gradient(top, white, #FFCA3B);
+			-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			-moz-box-shadow:    0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			box-shadow:         0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			}
+			
+			.btn-ira.delete:hover, .btn-ira.delete:focus {
+			border-color: #999;
+			background: -webkit-linear-gradient(top, white, #E52738);
+			background:    -moz-linear-gradient(top, white, #E52738);
+			background:     -ms-linear-gradient(top, white, #E52738);
+			background:      -o-linear-gradient(top, white, #E52738);
+			-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			-moz-box-shadow:    0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			box-shadow:         0 1px 2px rgba(0,0,0,0.25), inset 0 0 3px #fff;
+			}
+
+			.btn-ira.ok:active, 
+			.btn-ira.clear:active,
+			.btn-ira.clear:cancel,
+			.btn-ira.delete:active {
+				border: 1px solid #AAA;
+				border-bottom-color: #CCC;
+				border-top-color: #999;
+				-webkit-box-shadow: inset 0 1px 2px #aaa;
+				-moz-box-shadow:    inset 0 1px 2px #aaa;
+				box-shadow:         inset 0 1px 2px #aaa;
+
+			}
+			.btn-ira.ok:active{
+				background: -webkit-linear-gradient(top, #467F71, gainsboro);
+				background:    -moz-linear-gradient(top, #467F71, gainsboro);
+				background:     -ms-linear-gradient(top, #467F71, gainsboro);
+				background:      -o-linear-gradient(top, #467F71, gainsboro);
+			}
+			
+			.btn-ira.clear:active{
+				background: -webkit-linear-gradient(top, #E0E0E0, gainsboro);
+				background:    -moz-linear-gradient(top, #E0E0E0, gainsboro);
+				background:     -ms-linear-gradient(top, #E0E0E0, gainsboro);
+				background:      -o-linear-gradient(top, #E0E0E0, gainsboro);
+			}
+			.btn-ira.cancel:active{
+				background: -webkit-linear-gradient(top, #FFCA3B, gainsboro);
+				background:    -moz-linear-gradient(top, #FFCA3B, gainsboro);
+				background:     -ms-linear-gradient(top, #FFCA3B, gainsboro);
+				background:      -o-linear-gradient(top, #FFCA3B, gainsboro);
+			}
+			.btn-ira.delete:active{
+				background: -webkit-linear-gradient(top, #E52738, gainsboro);
+				background:    -moz-linear-gradient(top, #E52738, gainsboro);
+				background:     -ms-linear-gradient(top, #E52738, gainsboro);
+				background:      -o-linear-gradient(top, #E52738, gainsboro);
+			}
