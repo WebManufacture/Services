@@ -11,6 +11,32 @@ Extend = function(objToExtend, obj){
 	}
 }
 
+Inherit = function (Child, Parent, mixin)
+{
+	var F = function() { };
+    F.prototype = Parent.prototype
+    Child.prototype = new F();
+    Child.prototype.constructor = Child;
+	if (mixin){
+		for (var item in mixin){
+			Child.prototype[item] = mixin[item];
+		}
+	}
+	Child.base = Parent.prototype;
+	Child._super = function(args){
+		Child.base.constructor.apply(this, args);
+	}
+}
+
+Object.defineProperty(Object.prototype, "classType", {
+	enumerable: false,
+	get:function(){
+		var str = {}.toString.call(this);
+		str = str.substr(1, str.length-2);
+		return str.replace("object ", "");
+	}	
+});
+
 function gfdp(dp){
 	if (dp < 10) return "0" + dp;
 	return dp + "";
