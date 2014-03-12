@@ -1,4 +1,4 @@
-﻿<include url="%services%/UI/drag.js"></include>
+<include url="%services%/UI/Dragging.htm"></include>
 
 <script type="text/javascript">
     Win = M.GetModuleByUrl("%services%/ui/win.htm");
@@ -40,7 +40,7 @@
 	    win.WindowClose = Win.WindowClose;
 	    Ev.CreateEvent("OnWindowShow", win);
 	    Ev.CreateEvent("OnWindowHide", win);
-    	    Ev.CreateEvent("OnWindowClose", win);
+    	Ev.CreateEvent("OnWindowClose", win);
 	    var header = win.header = win.ins(DOM.div(".window_header"));
 	    header.innerHTML = '<span class="window_title">' + win.title +'</span>';
 	    header.ondblclick = 
@@ -51,9 +51,9 @@
 	    //header.attr("draggable", "true");
 	    var close = header.div(".close-button"); 
 	    close.onclick = function(){
-		win.WindowHide();
+			win.WindowHide();
 	    };
-	    Drag.MakeDraggable(win, ""); 
+		Drag.MakeDraggable(header, "dragger"); 
 
 	    if (module){
 		if (module.InitWindow){

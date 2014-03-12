@@ -106,6 +106,7 @@ if (!UsingDOM("Modules")) {
 				}
 			}
 		}
+		url = url.toLowerCase();
 		var module = M.CreateModule(url, "inprogress");
 		
 		/*var scripts = WS.Body._all("script.deffered");
@@ -214,6 +215,13 @@ WS.Header._add(scripts[i]);
 		scriptElement.attr("src", surl);
 		scriptElement.url = url;
 		scriptElement.onload = M.scriptLoaded;
+		scriptElement.onerror = function(){
+			console.error("SCRIPT " + url + " loading error!");
+			M.scriptLoaded.call(scriptElement);
+		}
+		/*M.waitScript(scriptElement, function(){
+			M.scriptLoaded.call(scriptElement);
+		});*/
 		return scriptElement;
 	};
 	
@@ -229,6 +237,44 @@ WS.Header._add(scripts[i]);
 			return scriptModule;
 		}
 		return null;
+	};
+	
+	
+	M.scriptLoaded = function(event, code) {
+		if (!this.is(".loaded")){
+			this.rcs("inprogress");
+			this.rcs("created");
+			this.cls("loaded");
+			this.cls("processed");
+			if (!this.local) {
+				//var item = globalStorage['system.web-manufacture.net'].setItem("module:" + this.url, code);
+			}
+			var modId = this._get("@module-id");
+			if (modId){	
+				var module = document.getElementById(modId);
+			}
+			else{
+				var module = this._get("^.module");
+			}
+			M.info("script-load", this.url, " from ", module ? module.url : undefined);
+			if (module) {
+				M.CheckModule(module, "script: " + this.url);
+			}
+		};
+	};
+	
+	M.waitScript = function(script, callback) {
+		if (script.is(".loaded")) return;
+		var txt = script.text;
+		var event = script.event;
+		if (txt){
+			callback();
+		}
+		else{
+			setTimeout(function(){
+				M.waitScript(script, callback);
+			},20);
+		}
 	};
 	
 	M.Load = function(ourl, from, cache) {
@@ -279,26 +325,6 @@ WS.Header._add(scripts[i]);
 		return module;
 	};
 	
-	M.scriptLoaded = function(event, code) {
-		this.rcs("inprogress");
-		this.rcs("created");
-		this.cls("loaded");
-		this.cls("processed");
-		if (!this.local) {
-			//var item = globalStorage['system.web-manufacture.net'].setItem("module:" + this.url, code);
-		}
-		var modId = this._get("@module-id");
-		if (modId){	
-			var module = document.getElementById(modId);
-		}
-		else{
-			var module = this._get("^.module");
-		}
-		M.info("script-load", this.url, " from ", module ? module.url : undefined);
-		if (module) {
-			M.CheckModule(module, "script: " + this.url);
-		}
-	};
 	
 	M.moduleLoaded = function(result) {
 		var module = this.module;

@@ -11,7 +11,11 @@
 	uutils._formatObj = function(obj, recursive, withBR){
 		var newLine = withBR ? ".with-br" : "";
 		var elem = DOM.div(".js-entity" + newLine);
+		elem.editingObj = obj;
 		elem.add("." + typeof (obj));
+		if (typeof (obj) == "number"){
+			elem.add(".js-property-value");	
+		}
 		if (typeof (obj) == 'object'){
 			if (obj instanceof Array){
 				elem.add(".array");
@@ -40,8 +44,9 @@
 					elem.innerHTML += "<br/>";
 				}
 				var prop = elem.div(".object-line");
+				prop.propertyKey = name;
 				prop.add("@name", name);
-				prop.div(".object-key", "&quot;" + name + "&quot;");
+				prop.div(".object-key", name/*"&quot;" + name + "&quot;"*/);
 				prop.div(".js-syntax.name-value-separator",':');
 				prop.add(uutils._formatObj(obj[name], recursive, withBR));
 				elem.div(".js-syntax.obj-property-separator",',');
@@ -52,7 +57,7 @@
 		}
 		if (typeof (obj) == 'string'){
 			elem.innerHTML = "<div class='js-syntax quote-start'>&quot;</div>";
-			elem.div(".js-entity.js-string").textContent = obj;
+			elem.div(".js-entity.js-string.js-property-value").textContent = obj;
 			elem.innerHTML += "<div class='js-syntax  quote-finish'>&quot;</div>";
 			return elem;
 		}

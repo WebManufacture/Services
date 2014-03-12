@@ -1,5 +1,8 @@
 require = function(){
-	return { resolve : function(){} };
+	return { 
+		resolve : function(){},
+		EventEmitter : Channel
+	};
 }
 
 log = function(){

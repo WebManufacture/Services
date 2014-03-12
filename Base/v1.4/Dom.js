@@ -72,7 +72,7 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 		return arr;
 	};
 	
-	DOM.Get = DOM.get = DOM._get = function(path) {
+	DOM.Get = DOM.get = DOM._get = DOM.first = function(path) {
 		if (path && path.length > 0 && path.start) {
 			if (path.start("@")) {
 				path = path.substr(1, path.length - 1);
@@ -114,6 +114,20 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 			return this.querySelector(path);
 		}
 	};
+	
+	DOM.last = function(path) {
+		if (this == DOM) {
+			var items = document.querySelectorAll(path);
+		}
+		else {
+			var items = this.querySelectorAll(path);
+		}
+		if (items && items.length > 0){
+			return items[items.length-1];
+		}
+		return null;
+	};
+	
 	
 	DOM.Set = DOM.set = DOM._set = function(path, value) {
 		if (!check(path)) {
