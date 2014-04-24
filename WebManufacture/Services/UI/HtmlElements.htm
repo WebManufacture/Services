@@ -687,6 +687,28 @@ SearchBox.ShowSelectedByHint(search);
 	HintableBox.Context.Process = HintableBox.InitElement;
 	
 	C.Add(HintableBox.Context);
+	 
+	IconBtn = {};
+	
+	IconBtn.Context = {};
+	IconBtn.Context.Selector = ".icon-btn";
+	IconBtn.Context.Condition = "ui-processing";
+	IconBtn.Context.Process = function(item) {
+		var icon = item.attr("icon");
+		if (icon != null && icon != '') {
+			if (icon.start('http')){
+				item.style.backgroundImage = "url('" + icon + "')";
+			}
+			else{
+				var preURL = 'Images/';
+				if (M.ServicesUrl) preURL = M.ServicesUrl + '/' + preURL;
+				item.style.backgroundImage = "url('" + preURL + icon + "')";
+			}
+			item.style.backgroundRepeat = "no-repeat";
+			item.style.backgroundPosition = "center center";
+		}
+	};
+
 	
 </script>
 
@@ -759,7 +781,7 @@ SearchBox.ShowSelectedByHint(search);
 		min-width: 30px;
 	}
 	
-	.btn-ira {
+	.btn-ira{
 		border: 2px solid #E0E0E0;
 		background: none no-repeat 0 0;
 		background-color: white;
@@ -844,6 +866,40 @@ SearchBox.ShowSelectedByHint(search);
 	.btn-ira.delete:active {
 		background: -moz-linear-gradient(center top , #E52738, gainsboro) repeat scroll 0 0 transparent;
 	}
+	
+	
+	.icon-btn {
+		background-position: center center;
+		background-repeat: no-repeat;
+		/*background-size: 48px 48px;
+		-moz-background-size: 48px 48px;*/
+		border: 1px solid silver;
+		border-radius: 10px 10px 10px 10px;
+		cursor: pointer;
+		display: inline-block;
+		height: 50px;
+		margin: 2px;
+		text-align: center;
+		vertical-align: top;
+		width: 50px;
+		font-size: 10px;
+		position: relative;
+	}
+	
+	.icon-btn.fixedsize {
+		background-size: 48px 48px;
+		-moz-background-size: 48px 48px;
+	}
+	
+	.icon-btn:hover{
+		border: 1px solid red;
+		background-color: yellow;    
+	}
+	
+	.icon-btn:active{
+		background-color: orange;    
+	}
+		
 	
 	.boxed{
 		border: solid 1px gray;

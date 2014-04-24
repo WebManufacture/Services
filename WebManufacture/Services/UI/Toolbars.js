@@ -3,11 +3,13 @@ Toolbar = M.GetModuleContainsUrl("UI/Toolbars.htm");
 Toolbar.Init = function() {
 	Toolbar.NoCache = false;
 	Toolbar.SpienBar = Toolbar.get(".spien-bar");
-	WS.Body.add(Toolbar.SpienBar);
 	Toolbar.LList = Toolbar.get("#loader-list");
 	Toolbar.LIcon = Toolbar.get("#loader-icon");
-	WS.Body.add(Toolbar.LList);
-	WS.Body.add(Toolbar.LIcon);
+	if (L && L.Debug){
+		WS.Body.add(Toolbar.SpienBar);
+		WS.Body.add(Toolbar.LList);
+		WS.Body.add(Toolbar.LIcon);
+	}
 	//Toolbar.SpienBar.onmouseover = Toolbar.SpienBarHover;
 	//Toolbar.SpienBar.onmouseout = Toolbar.SpienBarOut;
 	L.LogInfo("Toolbars initialized!");
