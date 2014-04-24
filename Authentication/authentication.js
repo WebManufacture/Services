@@ -17,40 +17,72 @@ function getXmlHttp(){
 	return xmlhttp;
 };
 
-Auth.InitAuth = function(){
-	var mod = M.GetModuleEndsUrl("authentication.htm");
-	AuthForm = mod.get("#AuthenticationForm");
-	WS.Body.ins(AuthForm);
-	//Auth.Form.Get("#LoginButton");
-	var loginButton = AuthForm.loginButton = AuthForm.get("#LoginButton");
+Auth.InitForm = function(authForm){
+	var loginButton = authForm.loginButton = authForm.get("#LoginButton");
 	loginButton.onclick = Auth.SignIn;
-	
-	var logoutButton = AuthForm.logoutButton = AuthForm.get("#LogoutButton");
+	var logoutButton = authForm.logoutButton = authForm.get("#LogoutButton");
 	logoutButton.onclick = Auth.SignOut;
-	
-	AuthForm.loginField = AuthForm.get('#aUserLogin');
-	AuthForm.passField = AuthForm.get('#aUserPass');
-	AuthForm.userName = AuthForm.get('#UserName');
-	
-	var login = localStorage['user-login'];
-	var pwd = localStorage['user-pass'];
-	var sessionkey = localStorage['user-sessionkey'];
-	
+	authForm.loginField = authForm.get('#aUserLogin');
+	authForm.passField = authForm.get('#aUserPass');
+	authForm.userName = authForm.get('#UserName');
+	return authForm;
+};
+
+Auth.Init = function(options){
+	if (!options || !options.login || !options.password){
+		var login = localStorage['user-login'];
+		var password = localStorage['user-pass'];
+	}
+	else{
+		login = options.login;
+		password = options.password;
+	}
+	if (!options || !options.sessionkey){
+		var sessionkey = localStorage['user-sessionkey'];
+	}
+	else{
+		sessionkey = options.sessionkey;
+	}
+	if (!options || !options.authUrl){
+		var authUrl = localStorage['auth-url'];
+	}	
+	else{
+		authUrl = options.authUrl;
+	}
+	if (authUrl) {
+		Auth.url = authUrl;
+	}
+	else{
+		Auth.url = '';
+	};	
 	if (login && sessionkey){
 		Auth.SessionReqest(login, sessionkey);
-		//alert(sessionkey);
 		return;
 	};
-	if (login && pwd && login != '' && pwd != '') {
-		//Auth.Login = login;
-		var reqestHash = Auth.Hash(login, pwd);
-		Auth.AuthReqest(login, reqestHash, pwd);
+	if (login && password && login != '' && password != '') {
+		var reqestHash = Auth.Hash(login, password);
+		Auth.AuthReqest(login, reqestHash, password);
 	};
 };
 
-Auth.SignIn = function(){
-	var login =  AuthForm.loginField.value;
-	var pass =  AuthForm.passField.value;
+Auth.InitAuth = function(){
+	var mod = M.GetModuleEndsUrl("authentication.htm");
+	AuthForm = mod.get("#AuthenticationForm");
+	Auth.InitForm(AuthForm);
+	WS.Body.ins(AuthForm);
+	Auth.Form = AuthForm;
+	Auth.Init();
+};
+
+Auth.SignIn = function(login, pass){
+	if (login && pass){
+		AuthForm.loginField.value = login;
+		AuthForm.passField.value = pass;
+	}
+	else{
+		login =  AuthForm.loginField.value;
+		pass =  AuthForm.passField.value;
+	}
 	if (!login || login == ''){
 		AuthForm.loginField.add(".empty");
 	}
@@ -92,7 +124,7 @@ Auth.Hash = function(login, pwd) {
 Auth.LogoutReqest = function(login){
 	var xmlhttp = getXmlHttp();
 	xmlhttp.login = login;
-	var url = Request.GetUrl('/Auth', {login: login, key : "logout"});
+	var url = Request.GetUrl(Auth.url + '/Auth', {login: login, key : "logout"});
 	xmlhttp.open('Get', url, true);
 	xmlhttp.send(null);
 };
@@ -101,7 +133,7 @@ Auth.KeepReqest = function(login, sessionkey){
 	var xmlhttp = getXmlHttp();
 	xmlhttp.login = login;
 	xmlhttp.sessionkey = sessionkey;
-	var url = Request.GetUrl('/Auth', {login: login, key : sessionkey});
+	var url = Request.GetUrl(Auth.url + '/Auth', {login: login, key : sessionkey});
 	xmlhttp.open('Get', url, true);
 	xmlhttp.onload = Auth.KeepSessionComplete;
 	xmlhttp.onerror = Auth.AuthError;
@@ -112,7 +144,7 @@ Auth.SessionReqest = function(login, sessionkey){
 	var xmlhttp = getXmlHttp();
 	xmlhttp.login = login;
 	xmlhttp.sessionkey = sessionkey;
-	var url = Request.GetUrl('/Auth', {login: login, key : sessionkey});
+	var url = Request.GetUrl(Auth.url + '/Auth', {login: login, key : sessionkey});
 	xmlhttp.open('Get', url, true);
 	xmlhttp.onload = Auth.AuthSessionComplete;
 	xmlhttp.onerror = Auth.AuthError;
@@ -124,7 +156,7 @@ Auth.AuthReqest = function(login, reqestHash, pass) {
 	var xmlhttp = getXmlHttp();
 	xmlhttp.login = login;
 	xmlhttp.pwd = pass;
-	var url = Request.GetUrl('/Auth', {login: login, hash : reqestHash});
+	var url = Request.GetUrl(Auth.url + '/Auth', {login: login, hash : reqestHash});
 	xmlhttp.open('Get', url, true);
 	xmlhttp.onload = Auth.AuthComplete;
 	xmlhttp.onerror = Auth.AuthError;

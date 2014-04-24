@@ -164,9 +164,10 @@ if (!UsingDOM("KLabNet")){
 		_endRequest : function(){		
 			if (this.callback){
 				var contentType = this.getResponseHeader("Content-Type");
+				this.contentType = contentType;
 				if (typeof(this.callback) == "function"){
 					var result = this.responseText;
-					if (contentType.start("text/json") || contentType.start("application/json")){
+					if (contentType && (contentType.start("text/json") || contentType.start("application/json"))){
 						try{
 							result = JSON.parse(result);
 						}
@@ -314,5 +315,4 @@ url = url.toString();*/
 	WS.DOMload(function(){
 		EV.CreateEvent("OnConnectionState", Net);
 	});
-};
-
+}
