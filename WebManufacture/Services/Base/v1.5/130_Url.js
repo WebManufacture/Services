@@ -118,6 +118,23 @@ Url = function(href, baseOnly){
 Url.Parse = Url.parse = function(href, urlObject, baseOnly){
 	if (!urlObject) urlObject = new Url();
 	var a = document.createElement("A");
+	if (!href.contains("://")){
+		if (window.location.pathname.ends("/")){
+			if (href.start("/")){
+				href = href.replace("/", "");
+			}
+		}
+		else{
+			if (href.start("/")){
+				href = window.location.pathname + href;
+			}
+			else{
+				if (!href.start(".")){
+					href = window.location.pathname + "/" + href;
+				}
+			}
+		}
+	}
 	a.href = urlObject.href = href;
 	urlObject.protocol = a.protocol;
 	urlObject.host = a.host;

@@ -221,13 +221,9 @@ if (!UsingDOM("KLabNet")){
 			var rq = new XMLHttpRequest();
 			if (this.TunnelUrl && typeof(url) == "string"){			
 				url = this.TunnelUrl + url;
-				/*if (typeof url == "string"){
-url = new Url(url);
-}
-url.rebase(this.TunnelUrl);
-url = url.toString();*/
 			}
 			rq.id = (Math.random() + "").replace("0.", "");
+			url = new Url(url);
 			rq.open(method, url + "", true);
 			rq.callback = callback;
 			rq.onload = this._endRequest;
