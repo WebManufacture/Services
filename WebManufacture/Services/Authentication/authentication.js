@@ -71,7 +71,11 @@ Auth.InitAuth = function(){
 	Auth.InitForm(AuthForm);
 	WS.Body.ins(AuthForm);
 	Auth.Form = AuthForm;
-	Auth.Init();
+	var options = null;
+	if (window.Config){
+		options = window.Config;
+	}
+	Auth.Init(options);
 };
 
 Auth.SignIn = function(login, pass){
@@ -171,6 +175,11 @@ Auth.AuthError = function(error){
 Auth.Error = function(error){		
 	localStorage.removeItem('user-login');
 	localStorage.removeItem('user-pass');
+	localStorage.removeItem('user-sessionkey');
+	Auth.Authenticated = false;
+	Auth.User = null;
+	Auth.SessionKey = null;
+	Auth.Login = null;
 	AuthForm.passField.value = "";
 	//ERROR!401 Неверный пароль!
 	//ERROR!403 Доступ запрещен!
@@ -220,6 +229,10 @@ Auth.AuthSessionComplete = function(result){
 			AuthForm.userName.set('' + Auth.Login);
 			AuthForm.del('.error');
 			Auth.Authenticated = true;
+			Auth.User = {
+				login : this.login,
+				sessionKey : Auth.SessionKey
+			}
 			if (typeof window.onAuth == 'function'){
 				window.onAuth(Auth.Login, Auth.Sessionkey);
 			}
