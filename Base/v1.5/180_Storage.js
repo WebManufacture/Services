@@ -663,6 +663,5 @@ CachedStorage.prototype = {
 	
 	WS.DOMload(KLabStorage.Init);
 	
-	
 }
 

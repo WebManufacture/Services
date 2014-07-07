@@ -52,9 +52,10 @@ Inherit = function (Child, Parent, mixin)
 		}
 	}
 	Child.base = Parent.prototype;
-	Child._super = function(args){
+	Child._super = Child.super_ = function(args){
 		Child.base.constructor.apply(this, args);
 	}
+	return Child;
 }
 
 Object.defineProperty(Object.prototype, "classType", {
@@ -104,7 +105,7 @@ Date.MonthRusNames = [
 	"май",
 	"июнь",
 	"июль",
-	"август",
+	"авгу��т",
 	"сен��ябрь",
 	"октябрь",
 	"ноябрь",

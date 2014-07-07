@@ -111,7 +111,7 @@ Url = function(href, baseOnly){
 		Url.Parse(href, this, baseOnly);
 	}
 	else{
-		Url.Parse(window.location, this, false);
+		Url.Parse(window.location.href, this, false);
 	}
 };
 
@@ -119,23 +119,17 @@ Url.Parse = Url.parse = function(href, urlObject, baseOnly){
 	if (!urlObject) urlObject = new Url();
 	var a = document.createElement("A");
 	if (!href.contains("://")){
-		if (window.location.pathname.ends("/")){
-			if (href.start("/")){
+		if (href.start("/")){
+			if (window.location.pathname.ends("/")){
 				href = href.replace("/", "");
 			}
-		}
-		else{
-			if (href.start("/")){
-				href = window.location.pathname + href;
-			}
 			else{
-				if (!href.start(".")){
-					href = window.location.pathname + "/" + href;
-				}
+				href = window.location.pathname + href;
 			}
 		}
 	}
 	a.href = urlObject.href = href;
+	urlObject.href = a.href;
 	urlObject.protocol = a.protocol;
 	urlObject.host = a.host;
 	urlObject.hostname = a.hostname;
@@ -222,6 +216,28 @@ Url.prototype = {
 				this.params[param[0]] = value;
 			}
 		}	
+	},
+	
+	resolve : function(relative){
+		if (!relative.contains("://")){
+			if (this.pathname.ends("/")){
+				if (relative.start("/")){
+					relative = relative.replace("/", "");
+				}
+			}
+			else{
+				if (relative.start("/")){
+					relative = this.pathname + relative;
+				}
+				else{
+					if (!relative.start(".")){
+						relative = this.pathname + "/" + relative;
+					}
+				}
+			}
+		}		
+		this.repath(relative);
+		return this;
 	},
 	
 	rebase : function(url){

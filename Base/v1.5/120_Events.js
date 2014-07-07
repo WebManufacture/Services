@@ -750,4 +750,54 @@ Channel.prototype._callHandlerAsync = function(route, callback, param, args){
 
 
 Channels = new Channel("/");
+
+EventEmitter = function(){
+	this._eventHandlers = {};	
+}
+
+EventEmitter.prototype.once = function(path, callback){
+	callback._isSingleCall = "single";
+	return this.on(path, callback);
+}
+
+EventEmitter.prototype.on = function(route, callback){
+	if (!this._eventHandlers[route]) this._eventHandlers[route] = [];
+	this._eventHandlers.push(callback);
+	return callback;
+};
+		
+EventEmitter.prototype.clear = function(route, handler){
+	if (!this._eventHandlers[route]) return false;
+	delete this._eventHandlers[route];
+	return true;
+};
+
+EventEmitter.prototype.un = function(route, handler){
+	if (!this._eventHandlers[route]) return false;
+	var handlers = this._eventHandlers[route];
+	for (var i = handlers.length - 1; i >= 0; i--){
+		if (handlers[i] == handler){
+			handlers.splice(i, 1);
+		}
+	}
+	return true;
+};
+
+EventEmitter.prototype.do = function(route){
+	if (!this._eventHandlers[route]) return null;
+	var handlers = this._eventHandlers[route];
+	var result = null;
+	for (var i = handlers.length - 1; i >= 0; i--){
+		result = this._callHandlerAsync(route, handlers[i]);
+		if (handlers[i]._isSingleCall) {
+			handlers.splice(i, 1);	
+		}
+	}
+	return result;
+}; 
+
+EventEmitter.prototype._callHandlerAsync = function(route, callback){
+	if (!callback) return false;
+	return callback.call(this, route);
+}
 		
