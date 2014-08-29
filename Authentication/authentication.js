@@ -53,7 +53,7 @@ Auth.Init = function(options){
 		Auth.url = authUrl;
 	}
 	else{
-		Auth.url = '';
+		Auth.url = 'http://security.web-manufacture.net';
 	};	
 	if (login && sessionkey){
 		Auth.SessionReqest(login, sessionkey);

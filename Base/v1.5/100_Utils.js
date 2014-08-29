@@ -53,7 +53,7 @@ Inherit = function (Child, Parent, mixin)
 	}
 	Child.base = Parent.prototype;
 	Child._super = Child.super_ = function(args){
-		Child.base.constructor.apply(this, args);
+		Child.base.constructor.apply(this, arguments);
 	}
 	return Child;
 }
