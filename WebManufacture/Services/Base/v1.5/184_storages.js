@@ -232,18 +232,22 @@ Inherit(Storages.SyncObj, Channel, {
 Inherit(Storages.Server, Storages._baseStorage, {
 	_sendRequest : function(type, selector, data, callback, defer){
 		var storage = this;
+		var url = storage.url + "?action=" + type + "&selector=" + encodeURIComponent(selector);
+		data = data ? JSON.stringify(data) : "";
+		var request = Net.POST(url, data);
+		request.callback = function(result){
+			var contentType = this.getResponseHeader("Content-Type");
+			syncObj.data = result;
+			syncObj.ready = true;
+			if (callback){
+				callback.call(this, result, storage);
+			}
+			syncObj.emit("data", result);
+		}
 		var syncObj = new Storages.SyncObj(this, function(){
-			var url = storage.url + "?action=" + type + "&selector=" + encodeURIComponent(selector);
-			syncObj.request = Net.POST(url, data ? JSON.stringify(data) : "", function(result){
-				var contentType = this.getResponseHeader("Content-Type");
-				syncObj.data = result;
-				syncObj.ready = true;
-				if (callback){
-					callback.call(this, result, storage);
-				}
-				syncObj.emit("data", result);
-			});
+			request.send(data);
 		});
+		syncObj.request = request;
 		if (callback && !defer) syncObj.go();
 		return syncObj;
 	},
@@ -276,11 +280,11 @@ Inherit(Storages.Server, Storages._baseStorage, {
 
 Storages.Server.Session = Inherit(function(url){
 	if (!url && window.Config && window.Config.Server){
-		arguments[0] = url = Config.Server.SessionStorageUrl;
+		url = Config.Server.SessionStorageUrl;
 	}
-	Storages.Server.Session.super_.apply(this, arguments); 
+	Storages.Server.Session.super_.call(this, url); 
 }, Storages.Server, {
-	_sendRequest : function(type, selector, data, callback){
+	_sendRequest : function(type, selector, data, callback, defer){
 		var syncObj = this.prototype._sendRequest.call(this, type, selector, data, callback, false);
 		if (window.Auth && window.Auth.SessionKey){
 			syncObj.request.setRequestHeader("auth-parameters", '{"SessionKey":"' + Auth.SessionKey + '"}');
@@ -291,13 +295,15 @@ Storages.Server.Session = Inherit(function(url){
 });
 
 Storages.Server.User = Inherit(function(url){
-	if (!url && window.Config && window.Config.Server){
-		arguments[0] = url = Config.Server.UserStorageUrl;
+	if (!url){
+		if (window.Config && window.Config.Server){
+			url = Config.Server.UserStorageUrl;
+		}
 	}
-	Storages.Server.Session.super_.apply(this, arguments); 
+	Storages.Server.User.super_.call(this, url); 
 }, Storages.Server, {
 	_sendRequest : function(type, selector, data, callback){
-		var syncObj = this.prototype._sendRequest.call(this, type, selector, data, callback, false);
+		var syncObj = Storages.Server.User.base._sendRequest.call(this, type, selector, data, callback, true);
 		if (window.Auth && window.Auth.Login){
 			syncObj.request.setRequestHeader("auth-parameters", '{"Login":"' + Auth.Login + '","SessionKey":"' + Auth.SessionKey + '"}');
 		}
@@ -310,7 +316,7 @@ Storages.Server.Site = Inherit(function(url){
 	if (!url && window.Config && window.Config.Server){
 		arguments[0] = url = Config.Server.SiteStorageUrl;
 	}
-	Storages.Server.Session.super_.apply(this, arguments); 
+	Storages.Server.Site.super_.call(this, url); 
 }, Storages.Server);
 
 
