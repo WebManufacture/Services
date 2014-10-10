@@ -1,3 +1,16 @@
+
+
+
+require = function(){
+	return { 
+		EventEmitter : Channel
+	}
+}
+
+module = {
+	"export" : null
+}
+
 function NodeServer(serverUrl){
 	if (!serverUrl){
 		this.ServerUrl = null; //Url.Resolve(window.location.protocol + "//" + window.location.host);

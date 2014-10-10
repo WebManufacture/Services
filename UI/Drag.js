@@ -1,4 +1,4 @@
-﻿if (!window.Drag){
+if (!window.Drag){
 	Drag = {dragObject : null};
 	
 	Drag.Init = function(text){
@@ -55,6 +55,25 @@
 		element.addEventListener("dragstart", Drag.DragElementStart);
 		element.addEventListener("dragend", Drag.DragElementEnd);
 	};
+	
+	Drag.dContext = { Selector: "[draggable='true']", Condition : "ui-processing", ".drag" : undefined}; 
+	Drag.dContext.Process = function(element){
+		Drag.MakeDraggable(element);
+	};
+	
+	Drag.ddContext = { Selector: ".draggable", Condition : "ui-processing", ".drag" : undefined}; 
+	Drag.ddContext.Process = function(element){
+		Drag.MakeDraggable(element);
+	};
+	
+	C.Add(Drag.dContext);
+	
+	Drag.rContext = { Selector: ".drop-receiver", Condition : "ui-processing", ".drag" : undefined}; 
+	Drag.rContext.Process = function(element){
+		Drag.MakeReceiver(element);
+	};
+	
+	C.Add(Drag.rContext);
 	
 	WS.DOMload(Drag.Init);
 }

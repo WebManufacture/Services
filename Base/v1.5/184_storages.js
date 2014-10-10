@@ -232,7 +232,7 @@ Inherit(Storages.SyncObj, Channel, {
 Inherit(Storages.Server, Storages._baseStorage, {
 	_sendRequest : function(type, selector, data, callback, defer){
 		var storage = this;
-		var url = storage.url + "?action=" + type + "&selector=" + encodeURIComponent(selector);
+		var url = storage.url + "?action=" + type + (selector ? "&selector=" + encodeURIComponent(selector) : "");
 		data = data ? JSON.stringify(data) : "";
 		var request = Net.POST(url, data);
 		request.callback = function(result){
@@ -261,15 +261,27 @@ Inherit(Storages.Server, Storages._baseStorage, {
 	},
 
 	get : function(selector, callback) {
+		if (!callback && typeof(selector) == "function") {
+			callback = selector;	
+			selector = null;
+		}
 		return this._sendRequest("get", selector, null, callback);
 	},
 
 	add : function(selector, data, callback) {
+		if (typeof(selector) == "object") {
+			data = selector;	
+			selector = null;
+		}
 		return this._sendRequest("add", selector, data, callback);
 	},
 
 
 	set : function(selector, data, callback) {
+		if (typeof(selector) == "object") {
+			data = selector;	
+			selector = null;
+		}
 		return this._sendRequest("set", selector, data, callback);
 	},
 
