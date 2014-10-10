@@ -398,7 +398,8 @@ if (!UsingDOM("KLabNet")){
 			}
 			rq.id = (Math.random() + "").replace("0.", "");
 			if (typeof url == 'string') url = new Url(url);
-			rq.open(method, url + "", true);
+			url = url + "";
+			rq.open(method, url, true);
 			rq.callback = callback;
 			rq.onload = this._endRequest;
 			rq.onerror = this._errorRequest;
@@ -419,47 +420,52 @@ if (!UsingDOM("KLabNet")){
 
 
 		get : function(url, data, callback){
-			if (!callback){
-				return this._sendRequest("GET", url, null, data);
+			if (!callback && typeof data == "function"){
+				callback = data;
+				data = null;
 			}
-			else{
+			{
 				return this._sendRequest("GET", url, data, callback);
 			}
 		},
 
 		all : function(url, data, callback){
-			if (!callback){
-				return this._sendRequest("SEARCH", url, null, data);
+			if (!callback && typeof data == "function"){
+				callback = data;
+				data = null;
 			}
-			else{
-				return this._sendRequest("SEARCH", url, data, callback);
-			}
+			return this._sendRequest("SEARCH", url, data, callback);
 		},
 
 		add : function(url, data, callback){
-			if (!callback){
-				return this._sendRequest("POST", url, null, data);
+			if (!callback && typeof data == "function"){
+				callback = data;
+				data = null;
 			}
-			else{
+			{
 				return this._sendRequest("POST", url, data, callback);
 			}
 		},
 
 		set : function(url, data, callback){
-			if (!callback){
-				return this._sendRequest("PUT", url, null, data);
+			if (!callback && typeof data == "function"){
+				callback = data;
+				data = null;
 			}
-			else{
+			{
 				return this._sendRequest("PUT", url, data, callback);
 			}
 		},
 
 		del : function(url, data, callback){
-			if (!callback){
-				return this._sendRequest("DELETE", url, null, data);
+			if (!callback && typeof data == "function"){
+				callback = data;
+				data = null;
 			}
 			else{
 				if (typeof(data) != 'string') data = JSON.stringify(data);
+			}
+			{				
 				return this._sendRequest("DELETE", url, data, callback);
 			}
 		}	

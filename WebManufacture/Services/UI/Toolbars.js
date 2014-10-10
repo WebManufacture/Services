@@ -69,14 +69,14 @@ Toolbar.InitToolbar = function(toolbar) {
 	var menus = toolbar._all(".menuitem");
 	var itemTitle = false;
 	for (var i = 0; i < menus.length; i++) {
-		itemTitle = Toolbar.InitItem(menus[i]) || itemTitle;
+		itemTitle = Toolbar.InitItem(menus[i], toolbar) || itemTitle;
 	}
 	if (itemTitle){
 		toolbar._add(".with-titles");
 	}
 }
 
-Toolbar.InitItem = function(item) {
+Toolbar.InitItem = function(item, toolbar) {
 	var result = false;
 	var text = item.innerHTML;
 	if (!item._is(".text") && text && text.length > 0 && text.trim().length > 0){
@@ -85,9 +85,91 @@ Toolbar.InitItem = function(item) {
 		result = true;
 	}
 	Toolbar.InitIcon(item);
+	if (item.is(".switch")){
+		item.addEventListener("click", function(){
+			if (this.is(".disabled")) return;
+			var mitem = this;
+			Toolbar.SwitchItem.call(toolbar, mitem);
+			this.all("influence").each(function(item){
+				Toolbar.CheckInfluence.call(toolbar, mitem, item);	
+			});			
+		});	
+	}	
+	item.addEventListener("click", function(){
+		if (this.is(".disabled")) return;
+		var mitem = this;
+		this.all("influence").each(function(item){
+			Toolbar.CheckInfluence.call(toolbar, mitem, item);	
+		});			
+	});	
 	return result;
 }
 
+Toolbar.SwitchItem = function(item){
+	var group = item.get("@switch-group");
+	if (!group){
+		this.all(".menuitem.switched:not([switch-group])").del(".switched");
+	}
+	else{
+		this.all(".menuitem.switched[switch-group='" + group + "']").del(".switched");
+	}
+	item.add(".switched");
+}
+
+Toolbar.CheckInfluence = function(item, influence){
+	var area = this;
+	if (influence.is(".global")){
+		area = WS.Body;
+	}
+	if (influence.is(".hide-self")){
+		item.hide();
+	};
+	if (influence.is(".hide")){
+		var target = influence.get("@target");
+		if (target){
+			target = area.all(target);
+			if (target){
+				target.hide();	
+			}
+		}
+	};
+	if (influence.is(".show")){
+		var target = influence.get("@target");
+		if (target){
+			target = area.all(target);
+			if (target){
+				target.show();	
+			}
+		}
+	};	
+	if (influence.is(".add")){
+		var target = influence.get("@target");
+		if (target){
+			target = area.all(target);
+			if (target){
+				target.add(influence.innerHTML);	
+			}
+		}
+	};
+	if (influence.is(".del")){
+		var target = influence.get("@target");
+		if (target){
+			target = area.all(target);
+			if (target){
+				target.del(influence.innerHTML);	
+			}
+		}
+	};
+	if (influence.is(".set")){
+		var target = influence.get("@target");
+		if (target){
+			target = area.all(target);
+			if (target){
+				target.set(influence.innerHTML);	
+			}
+		}
+	};
+}
 
 Toolbar.InitIcon = function(item) {
 	var icon = item.attr("icon");
@@ -102,7 +184,7 @@ Toolbar.InitIcon = function(item) {
 		}
 		item.style.backgroundRepeat = "no-repeat";
 		item.style.backgroundPosition = "center center";
-	}
+	};
 }
 
 Toolbar.BtnContext = {};

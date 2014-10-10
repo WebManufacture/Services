@@ -128,10 +128,28 @@
 		-moz-background-size: 48px 48px;
 	}
 	
-	.toolbar .menuitem:hover .title{
+	.toolbar .menuitem:hover {
+		background-color: yellow;    
+	}
+	
+	.toolbar .menuitem:hover:not(.disabled) .title{
 		height: 30px;
 		font-size: 12px;
 		color : navy;
+	}
+	
+	.toolbar .menuitem:active{
+		background-color: orange; 
+	}
+	
+	.toolbar .menuitem.disabled{
+		background-color: #ccc!important;
+		opacity: 0.5;
+	}
+	
+	.toolbar .menuitem.switched{
+		background-color: orange; 
+		border-width: 2px;
 	}
 	
 	.toolbar .menuitem .title{
@@ -141,6 +159,9 @@
 		color: #666;
 	}
 	
+	.toolbar .menuitem influence{
+		display : none;
+	}
 	
 	.toolbar .separator{
 		width: 10px;
@@ -177,9 +198,6 @@
 	}
 	
 	
-	.toolbar .menuitem:hover {
-		background-color: yellow;    
-	}
 	#loader-icon{
 		position: fixed;
 		top: 0;

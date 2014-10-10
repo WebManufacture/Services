@@ -1,11 +1,11 @@
 if (!UsingDOM("Contexts")) {
-	
+
 	C = Contexts;
-	
+
 	C.id = "Jasp_Contexts";
-	
+
 	C.url = "jasp.js";
-	
+
 	if (L){
 		C.info = L.Info;
 		C.error = L.Error;
@@ -15,9 +15,9 @@ if (!UsingDOM("Contexts")) {
 			console.log(message);
 		};
 	}
-	
+
 	C.ContextsCounter = 1;
-	
+
 	C.Add = C.add = function() {
 		var obj = arguments[0];
 		if (obj && (obj) instanceof Object && !((obj) instanceof HTMLElement)) {
@@ -44,7 +44,7 @@ if (!UsingDOM("Contexts")) {
 		}
 		return this._add(arguments);
 	};
-	
+
 	C.AddContext = function(processor, context, selector, type, priority) {
 		var obj = { "context": context,
 				   "for": selector,
@@ -56,7 +56,7 @@ if (!UsingDOM("Contexts")) {
 		cnt.context = context;
 		return cnt;
 	};
-	
+
 	C.Process = function(element, condition, param1) {
 		//C.info("proc-start", condition, " in " + element.ToString());
 		founded = 0;
@@ -71,7 +71,7 @@ if (!UsingDOM("Contexts")) {
 		}
 		//C.info("proc-end", condition, founded, " in " + element.ToString());
 	};
-	
+
 	C.ProcessContext = function(element, context, param1) {
 		var url = element._get("@url");
 		if (context.OnlyChilds != undefined && context.OnlyChilds) {
@@ -109,7 +109,7 @@ if (!UsingDOM("Contexts")) {
 		}
 		return processed;
 	};
-	
+
 	function GetNodesBySelector(selector) {
 		if (selector.start("this")) {
 			selector = selector.replace("this", "");
@@ -121,9 +121,9 @@ if (!UsingDOM("Contexts")) {
 		}
 		return result;
 	};
-	
+
 	HTMLElement.prototype["GetNodesBySelector"] = GetNodesBySelector;
-	
+
 	L.LogInfo("Contexts created!");
 }
 else {
@@ -132,13 +132,13 @@ else {
 
 if (!using("Jasp")) {
 	J = Jasp = { IsOlmObject: true };
-	
+
 	J.id = "JPR";
-	
+
 	J.url = "jasp.js";
-	
+
 	J.info = L.Info;
-	
+
 	J.ContextContext = { Selector: "context", Condition: "module-parsing" };
 	J.ContextContext.Selector = "context";
 	J.ContextContext.Process = function(element) {
@@ -155,9 +155,9 @@ if (!using("Jasp")) {
 		return true;
 		//Contexts.ProcessContext(W.Body, context);
 	}
-		
-		C.Add(J.ContextContext);
-	
+
+	C.Add(J.ContextContext);
+
 	J.ProcessContext = function(element, context, processingElem, param1) {
 		var Processor = {};
 		Processor.Element = element;
@@ -178,7 +178,7 @@ if (!using("Jasp")) {
 			L.LogError(e, "ProcessingContext : " + url, "System.Jasp.js");
 		}
 	};
-	
+
 	J.LoadingContext = { Condition: "ui-processing" };
 	J.LoadingContext.Selector = ".content[url]:not(.loaded)";
 	J.LoadingContext.Process = function(element) {
@@ -186,8 +186,8 @@ if (!using("Jasp")) {
 		AX.Get(url, J.ProcessLoadedContent, { context: element });
 		return false;
 	}
-		C.Add(J.LoadingContext);
-	
+	C.Add(J.LoadingContext);
+
 	J.ProcessLoadedContent = function(result, context) {
 		context._add(result);		
 		M.ParseModule(context);
@@ -217,7 +217,7 @@ window.eval(scripts[i].innerHTML);
 		J.EndProcess(context, J.LoadingContext);
 		return false;
 	};
-	
+
 	J.ProcessLoadedContent = function(result, context) {
 		context._add(result);		
 		M.ParseModule(context);
@@ -247,7 +247,7 @@ window.eval(scripts[i].innerHTML);
 		J.EndProcess(context, J.LoadingContext);
 		return false;
 	};
-	
+
 	J.JSONContext = { Condition: "ui-processing" };
 	J.JSONContext.Selector = ".json-content[url]:not(.loaded)";
 	J.JSONContext.ContextId = "JsonDataLoadingContext";
@@ -285,10 +285,10 @@ window.eval(scripts[i].innerHTML);
 						if (this.readyState == 4) {
 							J.ProcessJSONContextComplete(result, element);
 						}
-						
+
 					}
-						
-						req.send();
+
+					req.send();
 				}
 				else{
 					var req = Net.get(url, function(result){J.ProcessJSONContext(result, element)});
@@ -300,9 +300,9 @@ window.eval(scripts[i].innerHTML);
 		}
 		return false;
 	};
-	
+
 	C.Add(J.JSONContext);
-	
+
 	J.ProcessPartialJSONContext = function(result, context) {
 		var idpref = context.get("@id-prefix");
 		if (!idpref) idpref = "";
@@ -334,13 +334,13 @@ window.eval(scripts[i].innerHTML);
 			}
 		}
 	};
-	
+
 	J.ProcessJSONContextComplete = function(result, context) {
 		context.add(".loaded");
 		J.EndProcess(context, J.JSONContext);
 		return false;
 	};
-	
+
 	J.ProcessJSONContext = function(result, context) {
 		var idpref = context.get("@id-prefix");
 		if (!idpref) idpref = "";
@@ -393,17 +393,17 @@ window.eval(scripts[i].innerHTML);
 					console.error(e);
 				}
 			}
-			
+
 			context.add(".loaded");
 		}
 		else{
-			
+
 			context.add(".error");	
 		}
 		J.EndProcess(context, J.JSONContext);
 		return false;
 	};
-	
+
 	J.JsonToDivObject = function(obj, id){
 		var div = DOM.div(".json-object");
 		if (id){
@@ -428,13 +428,13 @@ window.eval(scripts[i].innerHTML);
 		}
 		return div;
 	};
-	
+
 	J.EndProcess = function(element, context) {
 		J.info("jasp-end", element.ToString(), context.id);
 		element.rcs("jasp-processing-" + context.ContextId);
 		element.cls("jasp-processed-" + context.ContextId);
 	};
-	
+
 	J.IdToWinContext = { Condition: "ui-processing" };
 	J.IdToWinContext.Selector = "div[id]";
 	J.IdToWinContext.Process = function(element) {
@@ -443,7 +443,7 @@ window.eval(scripts[i].innerHTML);
 		}
 	};
 	C.Add(J.IdToWinContext);
-	
+
 	J.MapByIdContext = { Condition: "ui-processing", Selector: "[mapById]" };
 	J.MapByIdContext.Process = function(element) {
 		var mbId = element.get("@mapById");
@@ -455,7 +455,7 @@ window.eval(scripts[i].innerHTML);
 		}
 	};
 	C.Add(J.MapByIdContext);
-	
+
 	J.ExtendsContext = { Condition: "ui-processing.ui-clone" };
 	J.ExtendsContext.Selector = "[extend]";
 	J.ExtendsContext.Process = function(element) {
@@ -476,23 +476,108 @@ window.eval(scripts[i].innerHTML);
 		}
 	};
 	C.Add(J.ExtendsContext);
-	
+
 	J.Commands = ['+', '<', '-', '=', '!'];
-	
+
 	J.ProcessJaspContext = function(element) {
 		element.code = J.Compile(element.html());
 		element.attr("code", element.code);
 		element.cls("compiled");
 		//Contexts.ProcessContext(W.Body, context);
 	};
-	
+
 	J.JaspContext = { Condition: "module-jasp" };
 	J.JaspContext.Selector = "jasp:not(.compiled)";
 	J.JaspContext.Process = J.ProcessJaspContext;
 	C.Add(J.JaspContext);
-	
+
 	J.Macros = AArray();
-	
+
+	J.Convert = function(obj){
+		var id = null;
+		var type = "";
+		var tags = "";
+		var classes = null;
+		var props = {};
+		var childs = null;
+		var next = null;
+		var follow = null;
+		for (var item in obj){
+			if (typeof obj[item] != "function"){
+				switch (item.toLowerCase()){
+					case "id": id = obj[item]; break;
+					case "type": type = obj[item]; break;
+					case "tags": tags = obj[item]; break;
+					case "classes": classes = obj[item]; break;
+					case "_childs": childs = obj[item]; break;
+					case "next": next = obj[item]; break;				
+					case "follow": follow = obj[item]; break;
+					default : props[item] = obj[item]; break;
+				}
+			}
+		}
+		if (!classes && tags){
+			classes = tags.split(" ");
+		}
+		if (!next && childs) next = [];
+		if (next) next.join(childs);
+		var selector = type + (id ? "#" + id : "");
+		for (var i = 0; i < classes.length; i++){
+			selector += "." + classes[i];
+		}
+		tags = tags.trim().split(" ");
+		for (var i = 0; i < tags.length; i++){
+			if (!selector.contains("." + tags[i])){
+				selector += "." + tags[i];
+			}
+		};
+		for (var item in props){
+			selector += '@' + item + '=' + props[item];	
+		}
+		if (childs || next || follow){
+			if (childs.length > 0){
+				if (childs.length > 1){
+					selector += "/(";
+					for (var i = 0; i < childs.length; i++){
+						selector += J.Convert(childs[i]);
+						if (i < childs.length - 1)  selector += ",";
+					}
+					selector += ")";
+				}
+				else{
+					selector += "/" + J.Convert(childs[0]);
+				}
+			}
+			if (next.length > 0){
+				if (childs.length > 1){
+					selector += "/(";
+					for (var i = 0; i < next.length; i++){
+						selector += J.Convert(next[i]);
+						if (i < next.length - 1)  selector += ",";
+					}
+					selector += ")";
+				}
+				else{
+					selector += "/" + J.Convert(next[0]);
+				}
+			}
+			if (follow.length > 0){
+				if (childs.length > 1){
+					selector += " (";
+					for (var i = 0; i < follow.length; i++){
+						selector += J.Convert(follow[i]);
+						if (i < follow.length - 1)  selector += ",";
+					}
+					selector += ")";
+				}
+				else{
+					selector += "/" + J.Convert(follow[0]);
+				}
+			}
+		}
+		return selector;
+	};
+
 	J.Compile = function(code) {
 		var compiledCode = "";
 		var lines = code.split('\n');
@@ -523,7 +608,7 @@ window.eval(scripts[i].innerHTML);
 						continue;
 					}
 					if (line.search(/^\s*[!]/) >= 0) {
-						
+
 						switch (command) {
 							case "<":
 								compiledCode += "window." + left.raplace('!', "").trim() + "(" + right + ");";
@@ -534,7 +619,7 @@ window.eval(scripts[i].innerHTML);
 						}
 						continue;
 					}
-					
+
 					if (command == "=") {
 						compiledCode += "J.Macros._add(" + left.replace('!', '') + ");";
 						continue;
@@ -560,8 +645,8 @@ window.eval(scripts[i].innerHTML);
 		}
 		return compiledCode;
 	}
-		
-		L.LogInfo("JASP Contexts registered!");
+
+	L.LogInfo("JASP Contexts registered!");
 }
 else {
 	L.LogError("Reinitilizing JASP!");

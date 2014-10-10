@@ -6,8 +6,15 @@
 		Drag.MakeDraggable(element);
 		element.cls("draggable");
 	};
-	
 	C.Add(Drag.dContext);
+	
+	
+	Drag.ddContext = { Selector: ".draggable", Condition : "ui-processing", ".drag" : undefined}; 
+	Drag.ddContext.Process = function(element){
+		Drag.MakeDraggable(element);
+	};
+	
+	C.Add(Drag.ddContext);
 	
 	Drag.rContext = { Selector: ".drop-receiver", Condition : "ui-processing", ".drag" : undefined}; 
 	Drag.rContext.Process = function(element){
@@ -249,7 +256,7 @@
 		}
 		element.dragType = dragType;
 		element.attr("drag-type", dragType)
-			element.attr("draggable", "true"); 
+		element.attr("draggable", "true"); 
 		element.cls("draggable");
 		element.addEventListener("dragstart", Drag.DragElementStart);
 		element.addEventListener("dragend", Drag.DragElementEnd);

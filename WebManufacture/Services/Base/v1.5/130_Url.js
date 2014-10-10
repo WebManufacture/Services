@@ -115,19 +115,38 @@ Url = function(href, baseOnly){
 	}
 };
 
+Url.getLocation = function(href) {
+    var match = href.match(/^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)(\/[^?#]*)(\?[^#]*|)(#.*|)$/);
+    return match && {
+        protocol: match[1],
+        host: match[2],
+        hostname: match[3],
+        port: match[4],
+        pathname: match[5],
+        search: match[6],
+        hash: match[7]
+    }
+}
+
 Url.Parse = Url.parse = function(href, urlObject, baseOnly){
 	if (!urlObject) urlObject = new Url();
-	var a = document.createElement("A");
 	if (!href.contains("://")){
 		if (href.start("/")){
 			if (window.location.pathname.ends("/")){
 				href = href.replace("/", "");
 			}
-			else{
-				href = window.location.pathname + href;
-			}
+			href = window.location.pathname + href;
 		}
-	}
+		if (href.start("./")){
+			href = href.replace(".", "");
+			href = window.location.origin + href;
+		}
+		if (href.start("../")){
+			href = href.replace("..", "");
+			href = window.location.origin + href;
+		}
+	}	
+	var a = document.createElement("a");	
 	a.href = urlObject.href = href;
 	urlObject.href = a.href;
 	urlObject.protocol = a.protocol;
