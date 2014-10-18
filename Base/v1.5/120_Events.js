@@ -95,12 +95,12 @@ parent[name].fire.apply(parent[name], arguments);
 }
 }*/
 		event.parent = parent;
-	}
+	}	
+	event.__domAdd = event.add;
+	event.__domDel = event.del;
 	for(var member in SysEvent){
 		event[member] = SysEvent[member];
 	}
-	event.__add = event.add;
-	event.__del = event.del;
 	event.add = event._add = event.Add = SysEvent.add;
 	event.del = event._del = event.Del = SysEvent.del;
 	event.init(lname, parent);
@@ -176,7 +176,7 @@ SysEvent.add = function (handler, condition) {
 		this.subscribe(handler, condition);
 	}
 	if (window.Log && window.Log.Debug){
-		return this.__add.apply(this, arguments);
+		return this.__domAdd.apply(this, arguments);
 	}
 	return null;
 };
@@ -186,7 +186,7 @@ SysEvent.del = function (handler, condition) {
 		this.unsubscribe(handler, condition);
 	}
 	if (window.Log && window.Log.Debug){
-		return this.__del.apply(this, arguments);
+		return this.__domDel.apply(this, arguments);
 	}
 	return null;
 };
