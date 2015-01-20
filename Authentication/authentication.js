@@ -113,6 +113,7 @@ Auth.Logout = function (){
 	AuthForm.userName.set('Аноним (Войти)');
 	AuthForm.passField.value = "";
 	AuthForm.Login = null;
+	AuthForm.SessionKey = null;
 	clearInterval(Auth.sessionKeepTimeout);
 	window.location = window.location;
 };
@@ -194,6 +195,7 @@ Auth.Error = function(error){
 	if (error == 404){
 		AuthForm.userName.set('Пользователь не найден');
 	}
+	clearInterval(Auth.sessionKeepTimeout);
 	AuthForm.del('.authenticated');	
 	AuthForm.add('.error');		
 };

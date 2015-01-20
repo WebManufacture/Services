@@ -19,7 +19,12 @@
 		title.onclick = function(){
 			WS.ToggleClass(node, "opened");
 		};
+		node.expand = TreeList.expandNode;
 		content.all(">.tree-node").each(TreeList.InitNode);
+	}
+	
+	TreeList.expandNode = function(){
+		this.add(".opened");
 	}
 	
 	TreeList.prototyope = {

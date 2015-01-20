@@ -233,6 +233,16 @@ Inherit(Storages.Server, Storages._baseStorage, {
 	_sendRequest : function(type, selector, data, callback, defer){
 		var storage = this;
 		var url = storage.url + "?action=" + type + (selector ? "&selector=" + encodeURIComponent(selector) : "");
+		if (window.Auth && (this.sessionKeyRequires || this.loginRequires)){
+			var sobj = {};
+			if (this.sessionKeyRequires && window.Auth.Sessionkey){
+				sobj.SessionKey = Auth.Sessionkey;
+			}
+			if (this.loginRequires && window.Auth.Login){
+				sobj.Login = Auth.Login;
+			}
+			url += "&auth-parameters=" + encodeURIComponent(JSON.stringify(sobj));
+		}	
 		data = data ? JSON.stringify(data) : "";
 		var request = Net.POST(url, data);
 		request.callback = function(result){
@@ -294,16 +304,10 @@ Storages.Server.Session = Inherit(function(url){
 	if (!url && window.Config && window.Config.Server){
 		url = Config.Server.SessionStorageUrl;
 	}
+	this.sessionKeyRequires = true;
 	Storages.Server.Session.super_.call(this, url); 
 }, Storages.Server, {
-	_sendRequest : function(type, selector, data, callback, defer){
-		var syncObj = this.prototype._sendRequest.call(this, type, selector, data, callback, false);
-		if (window.Auth && window.Auth.SessionKey){
-			syncObj.request.setRequestHeader("auth-parameters", '{"SessionKey":"' + Auth.SessionKey + '"}');
-		}
-		if (callback) syncObj.go();
-		return syncObj;
-	},	
+	
 });
 
 Storages.Server.User = Inherit(function(url){
@@ -312,16 +316,11 @@ Storages.Server.User = Inherit(function(url){
 			url = Config.Server.UserStorageUrl;
 		}
 	}
+	this.sessionKeyRequires = true;
+	this.loginRequires = true;
 	Storages.Server.User.super_.call(this, url); 
 }, Storages.Server, {
-	_sendRequest : function(type, selector, data, callback){
-		var syncObj = Storages.Server.User.base._sendRequest.call(this, type, selector, data, callback, true);
-		if (window.Auth && window.Auth.Login){
-			syncObj.request.setRequestHeader("auth-parameters", '{"Login":"' + Auth.Login + '","SessionKey":"' + Auth.SessionKey + '"}');
-		}
-		if (callback) syncObj.go();
-		return syncObj;
-	},	
+	
 });
 
 Storages.Server.Site = Inherit(function(url){
