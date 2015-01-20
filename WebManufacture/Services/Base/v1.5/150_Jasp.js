@@ -509,7 +509,7 @@ window.eval(scripts[i].innerHTML);
 					case "type": type = obj[item]; break;
 					case "tags": tags = obj[item]; break;
 					case "classes": classes = obj[item]; break;
-					case "_childs": childs = obj[item]; break;
+					case "childs": childs = obj[item]; break;//changed from "_childs" to "childs"
 					case "next": next = obj[item]; break;				
 					case "follow": follow = obj[item]; break;
 					default : props[item] = obj[item]; break;
