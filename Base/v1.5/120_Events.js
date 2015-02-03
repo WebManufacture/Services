@@ -353,6 +353,8 @@ else{
 	window.addEventListener("load", Events.Init, false);
 }
 
+
+
 Channel = function(route){
 	this.name = route;
 	this.routes = { $path : "/" };
@@ -799,5 +801,87 @@ EventEmitter.prototype.do = function(route){
 EventEmitter.prototype._callHandlerAsync = function(route, callback){
 	if (!callback) return false;
 	return callback.call(this, route);
+}
+
+Eventer = function(){
+	this.handlers = {};
+	//this.quickHandlers = [];
+};
+
+var __EventEmitterPrototype = {
+	bind : function(){
+		var event = arguments[0];
+		for (var i = 0; i < arguments.length; i++){
+			arguments[i] = arguments[i+1];
+		}
+		arguments.length--;
+		var handler = CreateClosure.apply(this, arguments);
+		this.subscribe(event, handler);
+	},
+	
+	once : function(event, handler){
+		handler._eventFlagOnce = true;
+		this.subscribe(event, handler);
+	},
+	
+		
+	clear : function(event){
+		if (!this.handlers[event]) return false;
+		this.handlers[event] = null;
+		return true;
+	},
+	
+	subscribe : function(event, handler){
+		if (event && typeof(handler) == "function") {
+			event = event + "";
+			if (!this.handlers[event]){
+				this.handlers[event] = [];
+			}
+			this.handlers[event].push(handler);
+		}
+	},
+	
+	unsubscribe : function(handler){
+		for (var event in this.handlers) {
+			this._unsubscribeHandler(event, handler);
+		}
+	},
+	
+	_unsubscribeHandler : function(event, handler){
+		for (var i = 0; i < this.handlers[event].length; i++){
+			if (this.handlers[event][i] == handler){
+				this.handlers[event][i].splice(i, 1);
+				i--; continue;
+			}
+		}
+	},
+	
+	fire : function(){
+		var event = arguments[0];
+		if (this.handlers[event] && this.handlers[event].length ){
+			for (var i = 0; i < arguments.length; i++){
+				arguments[i] = arguments[i+1];
+			}
+			arguments.length--;
+			for (var i = 0; i < this.handlers[event].length; i++){
+				var handler = this.handlers[event][i];
+				if (handler._eventFlagOnce){
+					this.handlers[event].splice(i, 1);
+					i--;
+				}
+				handler.apply(this, arguments);
+			}
+		}
+	},
+}
+
+__EventEmitterPrototype.add = __EventEmitterPrototype.on = __EventEmitterPrototype.subscribe;
+
+__EventEmitterPrototype.del = __EventEmitterPrototype.unsubscribe;
+
+__EventEmitterPrototype.emit = __EventEmitterPrototype.fire;
+
+for (var item in __EventEmitterPrototype){
+	Eventer.prototype[item] = __EventEmitterPrototype[item];
 }
 		

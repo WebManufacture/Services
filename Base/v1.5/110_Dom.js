@@ -20,6 +20,16 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 		return document.querySelector(path);
 	};
 	
+	DOM._onload = DOM.OnLoad = DOM.onLoad = function(handler){
+		WS.DOMload(handler);	
+	};
+	
+	DOM._on = DOM.On = function(event, handler){
+		if (event == "load"){
+			WS.DOMload(handler);
+		}
+	};
+	
 	DOM.JaspVersion = DOM.version = 1.41;
 	
 	DOM.Div = DOM.div = DOM._div = function(classes, value) {
@@ -114,7 +124,7 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 			return this.querySelector(path);
 		}
 	};
-	
+	/*
 	DOM.last = function(path) {
 		if (this == DOM) {
 			var items = document.querySelectorAll(path);
@@ -127,7 +137,7 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 		}
 		return null;
 	};
-	
+	*/
 	
 	DOM.Set = DOM.set = DOM._set = function(path, value) {
 		if (!check(path)) {
@@ -251,6 +261,17 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 	
 	DOM.All = DOM.all = DOM._all = function(path) {
 		var array = [];
+		if (!path) return null;
+		if (path[0] == "^") {
+			path = path.substr(1, path.length - 1);
+			var parent = this.parentNode;
+			var parents = [];
+			while (parent != null && parent._is) {
+				if (parent._is(path)) parents.push(parent);
+				parent = parent.parentNode;
+			}
+			return WS.WrapArray(parents);
+		}
 		if (path.start(">")) {
 			path = path.substr(1, path.length - 1);
 			var elem = this;
@@ -461,6 +482,12 @@ return wrapper.firstChild;*/
 		var owner = this;
 		if (owner == DOM) owner = WS.Body;
 		owner.innerHTML = html;
+	};
+	
+	BOM.text = BOM._text = function(html) {
+		var owner = this;
+		if (owner == DOM) owner = WS.Body;
+		owner.textContent = html;
 	};
 	
 	
