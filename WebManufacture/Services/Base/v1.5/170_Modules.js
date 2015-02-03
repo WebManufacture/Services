@@ -69,14 +69,27 @@ if (!UsingDOM("Modules")) {
 	
 	M.SubscribeTo = function(url, handler) {
 		url = M.prepareUrl(url);
-		var module = M.GetModuleByUrl(url);
-		if (module._is(".inprogress")) {
-			E.AddHandler("OnModuleRegistered", handler, url);
+		var modl = M.GetModuleByUrl(url);
+		if (!modl || modl._is(".inprogress")) {
+			M.OnModuleRegistered.subscribe(handler);
 			return false;
 		}
-		handler(url, module);
+		handler(url, modl);
 	};
-	
+		
+	M.WaitModule = function(url, callback){
+		url = M.prepareUrl(url);
+		if (M.GetModuleStatus(url) == "processed"){
+			callback(url, M.GetModuleByUrl(url));
+			return true;
+		}
+		M.OnModuleRegistered.subscribe(function(modUrl, module){
+			callback(modUrl, module);
+			return "del";
+		}, url);
+		return false;
+	};
+		
 	M.CreateModule = function(url, state) {
 		url = M.prepareUrl(url);
 		var module = M._div(".module");
@@ -641,19 +654,6 @@ M.CheckModule(mod, url);
 		for (var i = 0; i < links.length; i++){
 			document.head.appendChild(links[i]);
 		}
-	};
-	
-	M.WaitModule = function(url, callback){
-		url = M.prepareUrl(url);
-		if (M.GetModuleStatus(url) == "processed"){
-			callback(url, M.GetModuleByUrl(url));
-			return true;
-		}
-		M.OnModuleRegistered.subscribe(function(modUrl, module){
-			callback(modUrl, module);
-			return "del";
-		}, url);
-		return false;
 	};
 	
 	WS.DOMload(M.Init);

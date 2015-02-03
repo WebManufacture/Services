@@ -118,6 +118,12 @@ Storages.Global.Session = Storages.Session.Global;
 Storages.Global.User = Storages.User.Global;
 Storages.Global.Site = Storages.Site.Global;*/
 
+WS.DOMload(function(){
+	M.SubscribeTo("http://modules.web-manufacture.net/Storage.js", function(){
+		Storages.Temp = Storage;	
+	});
+});
+
 Storages.Local = function(storageName){
 	if (!storageName) storageName = "";
 	var origin = location.origin;

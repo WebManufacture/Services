@@ -9,13 +9,24 @@
 	}
 	
 	TreeList.InitNode = function(node){
-		var title = DOM.div(".tree-node-title");
-		title.set(node.get("@title"));
-		var content = DOM.div(".tree-node-content");
-		content.innerHTML = node.innerHTML;
-		node.innerHTML = "";
-		node.add(title);
-		node.add(content);				
+		var title = node.get(">.tree-node-title");
+		if (!title){
+			title = DOM.div(".tree-node-title");
+			title.set(node.get("@title"));
+			node.ins(title);
+		}
+		var content = node.get(">.tree-node-content");
+		if (!content){
+			content = DOM.div(".tree-node-content");			
+			for (var i = 0; i < node.childNodes.length; i++){
+				var child = node.childNodes[i];
+				if (child.is && child.is(".tree-node-title")) continue;
+				content.add(child);
+				i--;
+			}
+			node.add(content);
+		}				
+				
 		title.onclick = function(){
 			WS.ToggleClass(node, "opened");
 		};
