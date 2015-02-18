@@ -209,6 +209,7 @@ Auth.KeepSessionComplete = function(result){
 	if (this.responseText.length > 0){
 		Auth.Sessionkey = this.responseText;
 		localStorage.setItem('user-sessionkey', Auth.Sessionkey);
+		Auth.setCookie("user-key", Auth.Sessionkey);
 		return;
 	};
 	Auth.Logout();
@@ -224,6 +225,7 @@ Auth.AuthSessionComplete = function(result){
 	if (this.responseText.length > 0){
 		Auth.Sessionkey = this.responseText;
 		localStorage.setItem('user-sessionkey', Auth.Sessionkey);
+		Auth.setCookie("user-key", Auth.Sessionkey);
 		if (!Auth.Authenticated){
 			Auth.Login = this.login;
 			localStorage.setItem('user-login', Auth.Login);
@@ -259,11 +261,42 @@ Auth.AuthComplete = function(result){
 		Auth.Login = this.login;
 		localStorage.setItem('user-login', Auth.Login);
 		Auth.Sessionkey = this.responseText;
+		Auth.setCookie("user-key", Auth.Sessionkey);
 		localStorage.setItem('user-sessionkey', Auth.Sessionkey);
 		window.location = window.location;
 		return;
 	};	
 	Auth.Error(0);
 };
+
+Auth.setCookie = function(name, value, options) {
+  options = options || {};
+
+  var expires = options.expires;
+
+  if (typeof expires == "number" && expires) {
+    var d = new Date();
+    d.setTime(d.getTime() + expires*1000);
+    expires = options.expires = d;
+  }
+  if (expires && expires.toUTCString) { 
+  	options.expires = expires.toUTCString();
+  }
+
+  value = encodeURIComponent(value);
+
+  var updatedCookie = name + "=" + value;
+
+  for(var propName in options) {
+    updatedCookie += "; " + propName;
+    var propValue = options[propName];    
+    if (propValue !== true) { 
+      updatedCookie += "=" + propValue;
+     }
+  }
+
+  document.cookie = updatedCookie;
+}
+
 
 Auth.InitAuth();

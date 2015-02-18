@@ -291,7 +291,7 @@ SearchBox.ShowSelectedByHint(search);
 		else{
 			element.localKey = element.get("@local-source");
 			if (element.localKey){
-				LookupBox.FillBox.call(element, element.all("*"));
+				LookupBox.FillBox.call(element, DOM.all(element.localKey));
 			}
 		}
 	};
@@ -475,10 +475,9 @@ SearchBox.ShowSelectedByHint(search);
 		var urlSrc = element.get("@url-source");
 		var lookupSrc = element.get("@lookup-source");
 		if (lookupSrc){
-			var src = DOM(lookupSrc);
-			if (src){
-				HintableBox.FillLookup.call(element, src.all("*"));
-			}
+			
+				HintableBox.FillLookup.call(element, DOM.all(lookupSrc));
+	
 		}
 		else{
 			if (urlSrc){
@@ -928,5 +927,10 @@ SearchBox.ShowSelectedByHint(search);
 	.link:hover{
 		cursor: pointer;
 		color: blue;
+	}
+	input.empty{
+		border: solid 1px grey;
+		border-radius : 3px;
+		padding : 5px 10px;
 	}
 </style>

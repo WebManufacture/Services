@@ -51,15 +51,10 @@ Inherit(Storages._storageObject, EventEmitter, {
 });
 
 Storages._baseStorage = function(){
-		
+	Storages._baseStorage.super_.apply(this, arguments); 	
 };
 
-Inherit(Storages._baseStorage, EventEmitter, {
-	get : function(selector, callback){},
-	all : function(selector, callback){},
-	set : function(selector, callback){},
-	del : function(selector, callback){},
-	add : function(selector, callback){},
+Inherit(Storages._baseStorage, Storage, {
 	_serializeObject : function(obj){
 		
 	},
@@ -135,8 +130,9 @@ Storages.Local = function(storageName){
 	else{
 		this.storage = sessionStorage.getItem(this.storageKey);
 	}
-	if (!this.storage){ this.storage = "" };
-	this.storage = DOM.div("", this.storage);	
+	Storages.Local.super_.apply(this, arguments); 
+	//if (!this.storage){ this.storage = "" };
+	//this.storage = DOM.div("", this.storage);	
 };
 
 Inherit(Storages.Local, Storages._baseStorage, {
@@ -156,27 +152,7 @@ Inherit(Storages.Local, Storages._baseStorage, {
 		return this.channel.emit.apply(this.channel, arguments);
 	},
 	
-	get : function(selector, callback){
-		return this.storage.get(selector);
-	},
-	all : function(selector, callback){
-		return this.storage.all(selector);
-	},
-	set : function(item, callback){
-		var result = this.storage.innerHTML = item;
-		this._save();
-		return result;
-	},
-	del : function(selector, callback){
-		var result = this.storage.del(selector);
-		this._save();
-		return result;
-	},
-	add : function(item, callback){
-		var result = this.storage.innerHTML += item;
-		this._save();
-		return result;
-	},
+	
 	_save : function(){
 		if (this._privacy == "session"){ 
 			localStorage.setItem(this.storageKey, this.storage.innerHTML);
