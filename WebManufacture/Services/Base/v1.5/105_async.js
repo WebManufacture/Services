@@ -1,3 +1,9 @@
+if (typeof(setImmediate) != "function"){
+	function setImmediate(callback){
+		setTimeout(callback, 1);
+	}
+}
+
 Async = {
 	Sync : function(){
 		this.counter = 0;
