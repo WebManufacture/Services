@@ -154,12 +154,12 @@ Inherit(Storages.Local, Storages._baseStorage, {
 	
 	
 	_save : function(){
-		if (this._privacy == "session"){ 
+		/*if (this._privacy == "session"){ 
 			localStorage.setItem(this.storageKey, this.storage.innerHTML);
 		}
 		else{
 			sessionStorage.setItem(this.storageKey, this.storage.innerHTML);
-		}
+		}*/
 	}
 });
 
