@@ -24,10 +24,11 @@ if ((window.WS == undefined || window.WS == null) && (window.DOM == undefined ||
 		WS.DOMload(handler);	
 	};
 	
-	DOM._on = DOM.On = function(event, handler){
-		if (event == "load"){
+	DOM._on = DOM.On = DOM.on = function(event, handler, bubble){
+		if (event == "load" && this == DOM){
 			WS.DOMload(handler);
 		}
+		this.addEventListener(event, handler, bubble)
 	};
 	
 	DOM.JaspVersion = DOM.version = 1.41;
@@ -343,7 +344,7 @@ return wrapper.firstChild;*/
 		return this;
 	};
 	
-	DOM.Add = DOM.add = DOM._add = function(entity, value) {
+	DOM.Add = DOM.add = DOM._add = function(entity, value, param) {
 		var elem = this;
 		if (elem == DOM) elem = WS.Body; //document.documentElement;
 		if (entity == undefined || entity == null || entity.length == 0) {
@@ -372,6 +373,10 @@ return wrapper.firstChild;*/
 				var span = document.createElement("span");
 				span.innerHTML = entity;
 				return elem._add(span);
+			}
+			if (entity.start('!')) {
+				entity = entity.substr(1);
+				return elem._on(entity, value, param);
 			}
 			if (WS.CallEvent(elem, "onAddElem", entity)) {
 				elem.innerHTML += entity;
